@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ValidacaoCPF
@@ -23,14 +24,16 @@ namespace ValidacaoCPF
                 string cpfCliente = cliente["gbrmad_strcpf"].ToString(); // Pegou o valor digitado na coluna CPF
                 if (cpfCliente != null)
                 {
-                    QueryExpression queryContact = new QueryExpression(cliente.LogicalName);
-                    queryContact.ColumnSet.AddColumn("gp_cnpj");
-                    queryContact.Criteria.AddCondition("gp_cnpj", ConditionOperator.Equal, cpfCliente);
-                    EntityCollection collectioncontact = service.RetrieveMultiple(queryContact);
-
-                    if (collectioncontact.Entities.Count() > 0)
+                    Regex regex = new Regex(@"([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})");
+                    Match match = regex.Match(cpfCliente);
+                    if (match.Success)
                     {
-                        throw new InvalidPluginExecutionException("Este CNPJ já está cadastrado!");
+
+                    }
+
+                    else
+                    {
+                        throw new InvalidPluginExecutionException("Erro! Este CPF é inválido!");
                     }
                 }
 
