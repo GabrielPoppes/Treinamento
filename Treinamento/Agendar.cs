@@ -70,22 +70,23 @@ namespace Treinamento
                      * Nos campos abaixo, estamos simplesmente atribuindo os registros
                      */
 
-                    do
-                    {
-                        dataAtual = dataAtual.AddDays(1);
-                        dataAtual = dataAtual.Date + begin_compromise;
-                    } while (dataAtual.DayOfWeek != DayOfWeek.Monday);
 
-                    Entity novaTarefa = new Entity("appointment");
-                    novaTarefa["subject"] = "Fornecer agendamento para a ocorrência " + compromise; // subject = titulo
-                    novaTarefa["regardingobjectid"] = new EntityReference(entity.LogicalName, entity.Id);
-                    novaTarefa["ownerid"] = (EntityReference)proprietario;
-                    novaTarefa["scheduledstart"] = dataAtual; // Data inicial da agendamento
-                    novaTarefa["scheduledend"] = dataAtual.Date + end_compromise; // Data final
+                    dataAtual = dataAtual.AddDays(1);
+                    dataAtual = dataAtual.Date + begin_compromise;
+                    Entity novoCompromisso = new Entity("appointment");
+
+                    if (dataAtual.DayOfWeek == DayOfWeek.Monday)
+                    {
+                        novoCompromisso["subject"] = "Fornecer agendamento para a ocorrência " + compromise; // subject = titulo
+                        novoCompromisso["regardingobjectid"] = new EntityReference(entity.LogicalName, entity.Id);
+                        novoCompromisso["ownerid"] = (EntityReference)proprietario;
+                        novoCompromisso["scheduledstart"] = dataAtual; // Data inicial da agendamento
+                        novoCompromisso["scheduledend"] = dataAtual.Date + end_compromise; // Data final
+                    }
 
                     try
                     {
-                        service.Create(novaTarefa); // Criando a nova tarefa
+                        service.Create(novoCompromisso); // Criando a nova tarefa
                     }
                     catch (Exception ex)
                     {
